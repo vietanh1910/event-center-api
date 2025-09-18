@@ -34,5 +34,8 @@ public class User extends BaseEntity {
     private String address;
 
     private EPosition position;
+
+    @Column(name = "image_url")
+    private String imageUrl;
 }
 
