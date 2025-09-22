@@ -1,37 +1,83 @@
 package com.fpt.etc.entity;
 
-import com.fpt.etc.entity.enums.BookingStatus;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.*;
+import lombok.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "bookings")
 @Getter
 @Setter
-public class Booking extends BaseEntity {
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Booking {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "booking_id")
-    private Integer id;
+    private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "customer_id")
-    private User customer;
+    @NotNull
+    @Column(nullable = false)
+    private String userId;
 
-    @ManyToOne
-    @JoinColumn(name = "combo_id")
-    private Combo combo;
+    @NotNull
+    @Column(nullable = false, unique = true)
+    private String orderCode;
 
-    @Column(name = "event_date")
-    private java.time.LocalDate eventDate;
+    @NotBlank(message = "Name is required")
+    private String name;
 
-    @Column(name = "guest_count")
-    private Integer guestCount;
+    @NotBlank(message = "Email is required")
+    @Email
+    private String email;
 
-    private String venue;
+    @NotBlank(message = "Phone is required")
+    private String phone;
 
-    @Enumerated(EnumType.STRING)
-    private BookingStatus status;
+    @NotBlank(message = "Event date is required")
+    private String eventDate;
+
+    @NotBlank(message = "Event time is required")
+    private String eventTime;
+
+    @NotNull(message = "EventId is required")
+    private String eventId;
+
+    @Min(value = 1, message = "People must be greater than 0")
+    private int people;
+
+    private String address;
+
+    @NotBlank(message = "Payment method is required")
+    @Pattern(regexp = "^(full|deposit)$", message = "Payment method must be 'full' or 'deposit'")
+    private String paymentMethod;
+
+    @NotNull(message = "MenuId is required")
+    private String menuId;
+
+    private String roomId;
+    private String venueId;
+
+    @ElementCollection
+    @CollectionTable(name = "booking_services", joinColumns = @JoinColumn(name = "booking_id"))
+    @Column(name = "service_id")
+    private List<String> serviceIds;
+
+    private String notes;
+
+    private String status = "pending";
+    private String paymentStatus = "unpaid";
+
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    private LocalDateTime cancelledAt;
+    private String cancelReason;
+    private String cancelledBy; // "user" | "admin"
 }
+
+
 
