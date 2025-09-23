@@ -16,20 +16,10 @@ public class CloudinaryService {
 
     private final Cloudinary cloudinary;
 
-    public CloudinaryService(
-            @Value("${cloudinary.cloud_name}") String cloudName,
-            @Value("${cloudinary.api_key}") String apiKey,
-            @Value("${cloudinary.api_secret}") String apiSecret) {
-        this.cloudinary = new Cloudinary(ObjectUtils.asMap(
-                "cloud_name", cloudName,
-                "api_key", apiKey,
-                "api_secret", apiSecret
-        ));
-    }
-
     public String upload(MultipartFile file) {
         try {
-            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+            Map uploadResult = cloudinary.uploader()
+                    .upload(file.getBytes(), ObjectUtils.emptyMap());
             return (String) uploadResult.get("secure_url");
         } catch (IOException e) {
             throw new RuntimeException("Cloudinary upload failed", e);
@@ -44,6 +34,18 @@ public class CloudinaryService {
         } catch (IOException e) {
             throw new RuntimeException("Cloudinary delete failed", e);
         }
+    }
+
+    public String uploadFile(MultipartFile file) throws IOException {
+        Map uploadResult = cloudinary.uploader().upload(file.getBytes(),
+                ObjectUtils.asMap("resource_type", "auto"));
+        return uploadResult.get("secure_url").toString();
+    }
+
+    // Xoá file theo public_id (ví dụ: "folder/filename")
+    public String deleteFile(String publicId) throws IOException {
+        Map result = cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+        return result.get("result").toString(); // "ok" nếu xoá thành công
     }
 }
 

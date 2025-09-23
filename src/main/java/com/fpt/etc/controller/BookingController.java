@@ -1,8 +1,8 @@
 package com.fpt.etc.controller;
 
-import com.fpt.etc.dto.request.CancelBookingDto;
-import com.fpt.etc.dto.request.CreateBookingDto;
-import com.fpt.etc.dto.request.UpdateBookingStatusDto;
+import com.fpt.etc.dto.booking.CancelBookingDto;
+import com.fpt.etc.dto.booking.CreateBookingDto;
+import com.fpt.etc.dto.booking.UpdateBookingStatusDto;
 import com.fpt.etc.entity.Booking;
 import com.fpt.etc.services.BookingService;
 import jakarta.validation.Valid;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/bookings")
+@RequestMapping("/api/booking")
 @RequiredArgsConstructor
 public class BookingController {
 

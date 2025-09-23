@@ -1,24 +1,19 @@
 package com.fpt.etc.services;
 
-import com.fpt.etc.dto.request.UserProfileUpdateDTO;
+import com.fpt.etc.dto.response.UpdateProfileDto;
 import com.fpt.etc.entity.User;
 import com.fpt.etc.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private final CloudinaryService cloudinaryService;
 
     public User changePassword(Long id, String newPassword) {
         User user = userRepository.findById(id)
@@ -38,31 +33,43 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User updateProfile(Long id, UserProfileUpdateDTO dto) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-
-        user.setFullName(dto.getName());
-        user.setEmail(dto.getEmail());
-        user.setPhone(dto.getPhone());
-        user.setAddress(dto.getAddress());
-
-        MultipartFile avatar = dto.getAvatar();
-        if (avatar != null && !avatar.isEmpty()) {
-            try {
-                // ⚠️ chỗ này bạn có thể upload lên Cloudinary / S3 / hoặc lưu file path
-                String fakeUrl = "/uploads/" + avatar.getOriginalFilename();
-                user.setImageUrl(fakeUrl);
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to upload avatar", e);
-            }
-        }
-
-        return userRepository.save(user);
+    public User getById(Long id) {
+        return userRepository.findByIdAndDeletedFalse(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
+    public String updateProfile(Long id, UpdateProfileDto dto) {
+        User user = getById(id);
+
+        if (dto.getName() != null && !dto.getName().isBlank()) {
+            user.setName(dto.getName());
+        }
+        if (dto.getPhone() != null && !dto.getPhone().isBlank()) {
+            user.setPhone(dto.getPhone());
+        }
+        if (dto.getAddress() != null && !dto.getAddress().isBlank()) {
+            user.setAddress(dto.getAddress());
+        }
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+        if (dto.getAvatar() != null && !dto.getAvatar().isEmpty()) {
+            if (user.getAvatar() != null && !user.getAvatar().isEmpty()) {
+                cloudinaryService.delete(user.getAvatar());
+            }
+            String avatarUrl = cloudinaryService.upload(dto.getAvatar());
+            user.setAvatar(avatarUrl);
+        }
+
+        userRepository.save(user);
+        return "Profile updated successfully.";
+    }
+
+    public String softDelete(Long id) {
+        User user = getById(id);
+        user.setDeleted(true);
+        userRepository.save(user);
+        return "User deleted (soft)";
     }
 }
 

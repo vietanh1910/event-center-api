@@ -1,7 +1,7 @@
 package com.fpt.etc.controller;
 
-import com.fpt.etc.dto.request.CreateEventDto;
-import com.fpt.etc.dto.request.UpdateEventDto;
+import com.fpt.etc.dto.event.CreateEventDto;
+import com.fpt.etc.dto.event.UpdateEventDto;
 import com.fpt.etc.entity.Event;
 import com.fpt.etc.services.EventService;
 import jakarta.validation.Valid;

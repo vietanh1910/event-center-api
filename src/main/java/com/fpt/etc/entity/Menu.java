@@ -37,4 +37,3 @@ public class Menu {
 
     private boolean deleted = false;
 }
-

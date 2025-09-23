@@ -14,10 +14,10 @@ public class EmailTemplateHelper {
             Room room,
             Menu menu,
             List<Dish> dishes,
-            List<Service> services
+            List<ServiceEntity> services
     ) {
         String serviceNames = services.stream()
-                .map(Service::getName)
+                .map(ServiceEntity::getName)
                 .collect(Collectors.joining(", "));
 
         String dishHtmlList = dishes.stream()
@@ -124,10 +124,10 @@ public class EmailTemplateHelper {
             Room room,
             Menu menu,
             List<Dish> dishes,
-            List<Service> services
+            List<ServiceEntity> services
     ) {
         String serviceNames = services.stream()
-                .map(Service::getName)
+                .map(ServiceEntity::getName)
                 .collect(Collectors.joining(", "));
 
         String dishHtmlList = dishes.stream()

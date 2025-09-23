@@ -1,9 +1,9 @@
 package com.fpt.etc.services;
 
-import com.fpt.etc.dto.request.CreateMenuDto;
-import com.fpt.etc.dto.request.DishDetailDto;
-import com.fpt.etc.dto.request.UpdateMenuDto;
-import com.fpt.etc.dto.response.MenuDetailDto;
+import com.fpt.etc.dto.dish.DishDetailDto;
+import com.fpt.etc.dto.menu.CreateMenuDto;
+import com.fpt.etc.dto.menu.MenuWithDishesDto;
+import com.fpt.etc.dto.menu.UpdateMenuDto;
 import com.fpt.etc.entity.Menu;
 import com.fpt.etc.repository.MenuRepository;
 import jakarta.transaction.Transactional;
@@ -18,21 +18,21 @@ import java.util.List;
 public class MenuService {
 
     private final MenuRepository menuRepository;
-    private final DishService dishService; // để load tên món
+    private final DishService dishService;
 
-    public List<MenuDetailDto> getAll() {
+    public List<MenuWithDishesDto> getAll() {
         return menuRepository.findByDeletedFalse().stream().map(menu -> {
             List<DishDetailDto> dishes = dishService.getDishesByIds(menu.getDishIds());
-            return new MenuDetailDto(menu.getId(), menu.getName(), menu.getPrice(), dishes);
+            return new MenuWithDishesDto(menu.getId(), menu.getName(), menu.getPrice(), dishes);
         }).toList();
     }
 
-    public MenuDetailDto getById(Long id) {
+    public MenuWithDishesDto getById(Long id) {
         Menu menu = menuRepository.findById(id)
                 .filter(m -> !m.isDeleted())
                 .orElseThrow(() -> new RuntimeException("Menu not found"));
         List<DishDetailDto> dishes = dishService.getDishesByIds(menu.getDishIds());
-        return new MenuDetailDto(menu.getId(), menu.getName(), menu.getPrice(), dishes);
+        return new MenuWithDishesDto(menu.getId(), menu.getName(), menu.getPrice(), dishes);
     }
 
     @Transactional
@@ -68,4 +68,3 @@ public class MenuService {
         menuRepository.save(menu);
     }
 }
-

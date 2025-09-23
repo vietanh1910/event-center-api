@@ -1,7 +1,7 @@
 package com.fpt.etc.controller;
 
-import com.fpt.etc.dto.request.CreateDishDto;
-import com.fpt.etc.dto.request.UpdateDishDto;
+import com.fpt.etc.dto.dish.CreateDishDto;
+import com.fpt.etc.dto.dish.UpdateDishDto;
 import com.fpt.etc.entity.Dish;
 import com.fpt.etc.services.DishService;
 import jakarta.validation.Valid;

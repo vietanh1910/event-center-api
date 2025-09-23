@@ -1,41 +1,57 @@
 package com.fpt.etc.entity;
 
-import com.fpt.etc.entity.enums.EPosition;
-import com.fpt.etc.entity.enums.ERole;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Entity
 @Table(name = "users")
-@Data
-@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-public class User extends BaseEntity {
+@Builder
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id;   // tương tự ObjectId bên Mongo
 
-    @Column(name = "full_name", nullable = false)
-    private String fullName;
+    @NotBlank(message = "Name is required")
+    @Column(nullable = false)
+    private String name;
 
-    @Column(unique = true, nullable = false)
+    @Email(message = "Email is invalid")
+    @NotBlank(message = "Email is required")
+    @Column(nullable = false, unique = true)
     private String email;
 
-    private String phone;
-
+    @NotBlank(message = "Password is required")
+    @Size(min = 6, message = "Password must be at least 6 characters")
+    @Column(nullable = false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    private ERole role;
+    @Column(nullable = false)
+    @Builder.Default
+    private String role = "CUSTOMER";
+
+    private String avatar;
+
+    @NotBlank(message = "Phone is required")
+    @Column(nullable = false, unique = true)
+    private String phone;
 
     private String address;
 
-    private EPosition position;
+    @Column(nullable = false)
+    @Builder.Default
+    private String status = "active";
 
-    @Column(name = "image_url")
-    private String imageUrl;
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean deleted = false;
 }
+
 

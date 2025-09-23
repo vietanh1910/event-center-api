@@ -1,6 +1,7 @@
 package com.fpt.etc.controller;
 
 import com.fpt.etc.dto.request.UserProfileUpdateDTO;
+import com.fpt.etc.dto.response.UpdateProfileDto;
 import com.fpt.etc.entity.User;
 import com.fpt.etc.services.UserService;
 import org.springframework.http.ResponseEntity;
@@ -19,24 +20,9 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        return userService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
         return ResponseEntity.ok(userService.create(user));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateProfile(
-            @PathVariable Long id,
-            @ModelAttribute UserProfileUpdateDTO dto // nhận form-data
-    ) {
-        return ResponseEntity.ok(userService.updateProfile(id, dto));
     }
 
     @PutMapping("/{id}/change-password")
@@ -51,5 +37,22 @@ public class UserController {
 
         userService.changePassword(id, newPassword);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getById(id));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updateProfile(
+            @PathVariable Long id,
+            @ModelAttribute UpdateProfileDto dto) {
+        return ResponseEntity.ok(userService.updateProfile(id, dto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> softDelete(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.softDelete(id));
     }
 }

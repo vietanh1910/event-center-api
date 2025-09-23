@@ -23,10 +23,10 @@ public class JwtUtils {
     @Value("${jwt.expiration.ms}")
     private int jwtExpirationMs;
 
-    public String generateJwtToken(Authentication authentication) {
-        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+    public String generateToken(Long userId, String role) {
         return Jwts.builder()
-                .setSubject((userPrincipal.getUsername()))
+                .setSubject(String.valueOf(userId))
+                .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(key(), SignatureAlgorithm.HS256)

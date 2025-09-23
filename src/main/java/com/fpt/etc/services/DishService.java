@@ -1,7 +1,8 @@
 package com.fpt.etc.services;
 
-import com.fpt.etc.dto.request.CreateDishDto;
-import com.fpt.etc.dto.request.UpdateDishDto;
+import com.fpt.etc.dto.dish.CreateDishDto;
+import com.fpt.etc.dto.dish.DishDetailDto;
+import com.fpt.etc.dto.dish.UpdateDishDto;
 import com.fpt.etc.entity.Dish;
 import com.fpt.etc.repository.DishRepository;
 import jakarta.transaction.Transactional;
@@ -56,6 +57,16 @@ public class DishService {
 
         dish.setDeleted(true);
         dishRepository.save(dish);
+    }
+
+    public List<DishDetailDto> getDishesByIds(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) return List.of();
+
+        List<Dish> dishes = dishRepository.findByIdInAndDeletedFalse(ids);
+
+        return dishes.stream()
+                .map(d -> new DishDetailDto(d.getId(), d.getName()))
+                .toList();
     }
 }
 

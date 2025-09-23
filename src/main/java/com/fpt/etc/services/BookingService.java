@@ -1,8 +1,8 @@
 package com.fpt.etc.services;
 
-import com.fpt.etc.dto.request.CancelBookingDto;
-import com.fpt.etc.dto.request.CreateBookingDto;
-import com.fpt.etc.dto.request.UpdateBookingStatusDto;
+import com.fpt.etc.dto.booking.CancelBookingDto;
+import com.fpt.etc.dto.booking.CreateBookingDto;
+import com.fpt.etc.dto.booking.UpdateBookingStatusDto;
 import com.fpt.etc.entity.Booking;
 import com.fpt.etc.helpers.EmailTemplateHelper;
 import com.fpt.etc.repository.BookingRepository;

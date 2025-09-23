@@ -54,12 +54,9 @@ public class WebSecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/api/auth/**").permitAll() // Cho phép tất cả truy cập vào /api/auth/**
-                                .requestMatchers("/h2-console/**").permitAll() // Cho phép truy cập H2 console
-                                .anyRequest().authenticated() // Tất cả các request khác đều cần xác thực
+                        auth.requestMatchers("/api/**").permitAll() // Cho phép tất cả truy cập vào /api/auth/**
                 );
 
-        // Cần vô hiệu hóa frameOptions để H2 console hoạt động
         http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
