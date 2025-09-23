@@ -57,15 +57,15 @@ public class Booking {
     private String paymentMethod;
 
     @NotNull(message = "MenuId is required")
-    private String menuId;
+    private Long menuId;
 
-    private String roomId;
-    private String venueId;
+    private Long roomId;
+    private Long venueId;
 
     @ElementCollection
     @CollectionTable(name = "booking_services", joinColumns = @JoinColumn(name = "booking_id"))
     @Column(name = "service_id")
-    private List<String> serviceIds;
+    private List<Long> serviceIds;
 
     private String notes;
 

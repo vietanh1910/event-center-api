@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "rooms")
 @Getter
@@ -38,7 +40,7 @@ public class Room {
 
     @NotNull(message = "Price is required")
     @Min(value = 0, message = "Price must be non-negative")
-    private Double price;
+    private BigDecimal price;
 
     private boolean deleted = false;
 }

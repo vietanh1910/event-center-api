@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class ServiceEntity {
 
     @NotNull(message = "Price is required")
     @Min(value = 0, message = "Price must be non-negative")
-    private Double price;
+    private BigDecimal price;
 
     private String description;
 

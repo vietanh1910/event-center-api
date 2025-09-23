@@ -38,14 +38,14 @@ public class CreateBookingDto {
     @Pattern(regexp = "^(full|deposit)$", message = "PaymentMethod must be 'full' or 'deposit'")
     private String paymentMethod;
 
-    private String roomId;
+    private Long roomId;
 
     @NotNull(message = "MenuId is required")
-    private String menuId;
+    private Long menuId;
 
-    private String venueId;
+    private Long venueId;
 
-    private List<String> serviceIds;
+    private List<Long> serviceIds;
     private String notes;
 }
 

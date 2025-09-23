@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
+
 @Data
 public class CreateRoomDto {
 
@@ -25,7 +27,7 @@ public class CreateRoomDto {
 
     @NotNull(message = "Price is required")
     @Min(value = 0, message = "Price must be non-negative")
-    private Double price;
+    private BigDecimal price;
 
     @NotNull(message = "Image is required")
     private MultipartFile image;
