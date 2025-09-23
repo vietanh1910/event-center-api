@@ -1,9 +1,14 @@
 package com.fpt.etc.services;
 
 import com.fpt.etc.dto.event.CreateEventDto;
+import com.fpt.etc.dto.event.EventResponse;
 import com.fpt.etc.dto.event.UpdateEventDto;
+import com.fpt.etc.dto.menu.MenuResponse;
+import com.fpt.etc.dto.service.ServiceResponse;
 import com.fpt.etc.entity.Event;
 import com.fpt.etc.repository.EventRepository;
+import com.fpt.etc.repository.MenuRepository;
+import com.fpt.etc.repository.ServiceRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,10 +24,49 @@ public class EventService {
     private final EventRepository eventRepository;
     private final SlugService slugService;     // service nhỏ để generate slug (tương tự Slugify trong C#)
     private final CloudinaryService cloudinaryService; // service upload ảnh
+    private final MenuRepository menuRepository; // service upload ảnh
+    private final ServiceRepository serviceRepository; // service upload ảnh
 
-    public List<Event> getAll() {
-        return eventRepository.findAll()
-                .stream().filter(ev -> !ev.isDeleted()).toList();
+    public List<EventResponse> getAll() {
+        return eventRepository.findAll().stream()
+                .filter(ev -> !ev.isDeleted())
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    private EventResponse mapToResponse(Event event) {
+        // Lấy menu theo id
+        List<MenuResponse> menus = event.getMenuIds().isEmpty() ? List.of() :
+                menuRepository.findAllById(event.getMenuIds()).stream()
+                        .map(m -> MenuResponse.builder()
+                                .id(m.getId())
+                                .name(m.getName())
+                                .price(m.getPrice())
+                                .build())
+                        .toList();
+
+        // Lấy service theo id
+        List<ServiceResponse> services = event.getServiceIds().isEmpty() ? List.of() :
+                serviceRepository.findAllById(event.getServiceIds()).stream()
+                        .map(s -> ServiceResponse.builder()
+                                .id(s.getId())
+                                .name(s.getName())
+                                .price(s.getPrice())
+                                .build())
+                        .toList();
+
+        return EventResponse.builder()
+                .id(event.getId())
+                .name(event.getName())
+                .subName(event.getSubName())
+                .icon(event.getIcon())
+                .slug(event.getSlug())
+                .description(event.getDescription())
+                .images(event.getImages())
+                .hot(event.isHot())
+                .menus(menus)
+                .services(services)
+                .build();
     }
 
     public Event getBySlug(String slug) {

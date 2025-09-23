@@ -2,6 +2,7 @@ package com.fpt.etc.controller;
 
 import com.fpt.etc.dto.venue.CreateVenueDto;
 import com.fpt.etc.dto.venue.UpdateVenueDto;
+import com.fpt.etc.dto.venue.VenueResponse;
 import com.fpt.etc.entity.Venue;
 import com.fpt.etc.services.VenueService;
 import jakarta.validation.Valid;
@@ -21,7 +22,7 @@ public class VenueController {
     private final VenueService venueService;
 
     @GetMapping
-    public ResponseEntity<List<Venue>> getAll() {
+    public ResponseEntity<List<VenueResponse>> getAll() {
         return ResponseEntity.ok(venueService.getAll());
     }
 

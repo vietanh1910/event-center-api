@@ -1,6 +1,7 @@
 package com.fpt.etc.controller;
 
 import com.fpt.etc.dto.event.CreateEventDto;
+import com.fpt.etc.dto.event.EventResponse;
 import com.fpt.etc.dto.event.UpdateEventDto;
 import com.fpt.etc.entity.Event;
 import com.fpt.etc.services.EventService;
@@ -20,7 +21,7 @@ public class EventController {
     private final EventService eventService;
 
     @GetMapping
-    public ResponseEntity<List<Event>> getAll() {
+    public ResponseEntity<List<EventResponse>> getAll() {
         return ResponseEntity.ok(eventService.getAll());
     }
 

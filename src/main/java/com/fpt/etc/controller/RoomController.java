@@ -30,20 +30,17 @@ public class RoomController {
         return ResponseEntity.ok(roomService.getRoomById(id));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Room> create(@ModelAttribute @Valid CreateRoomDto dto) {
         return ResponseEntity.ok(roomService.createRoom(dto));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}")
     public ResponseEntity<Room> update(@PathVariable Long id,
                                        @ModelAttribute UpdateRoomDto dto) {
         return ResponseEntity.ok(roomService.updateRoom(id, dto));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         roomService.deleteRoom(id);

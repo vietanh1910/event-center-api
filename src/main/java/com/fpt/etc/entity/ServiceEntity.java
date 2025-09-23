@@ -30,6 +30,7 @@ public class ServiceEntity {
     @Min(value = 0, message = "Price must be non-negative")
     private BigDecimal price;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @ElementCollection

@@ -23,16 +23,19 @@ public class JwtUtils {
     @Value("${jwt.expiration.ms}")
     private int jwtExpirationMs;
 
-    public String generateToken(Long userId, String role) {
-        return Jwts.builder()
-                .setSubject(String.valueOf(userId))
-                .claim("role", role)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(key(), SignatureAlgorithm.HS256)
-                .compact();
+    private Key getLoginSigningKey() {
+        return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
+    public String generateJwtToken(Authentication authentication) {
+        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+        return Jwts.builder()
+                .setSubject(userPrincipal.getUsername())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .signWith(getLoginSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
     private Key key() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }

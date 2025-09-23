@@ -1,5 +1,6 @@
 package com.fpt.etc.controller;
 
+import com.fpt.etc.dto.booking.BookingResponse;
 import com.fpt.etc.dto.booking.CancelBookingDto;
 import com.fpt.etc.dto.booking.CreateBookingDto;
 import com.fpt.etc.dto.booking.UpdateBookingStatusDto;
@@ -21,7 +22,7 @@ public class BookingController {
     private final BookingService bookingService;
 
     @GetMapping
-    public ResponseEntity<List<Booking>> getAll(@RequestParam(required = false) String status) {
+    public ResponseEntity<List<BookingResponse>> getAll(@RequestParam(required = false) String status) {
         return ResponseEntity.ok(bookingService.getAll(status));
     }
 

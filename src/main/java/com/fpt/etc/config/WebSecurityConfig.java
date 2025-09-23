@@ -53,9 +53,9 @@ public class WebSecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/api/**").permitAll() // Cho phép tất cả truy cập vào /api/auth/**
-                );
+                .authorizeHttpRequests((auth -> auth
+                        .anyRequest().permitAll()   // 👈 tất cả request đều cho phép
+                ));
 
         http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
         http.authenticationProvider(authenticationProvider());

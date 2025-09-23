@@ -1,8 +1,11 @@
 package com.fpt.etc.services;
 
+import com.fpt.etc.dto.room.RoomResponse;
 import com.fpt.etc.dto.venue.CreateVenueDto;
 import com.fpt.etc.dto.venue.UpdateVenueDto;
+import com.fpt.etc.dto.venue.VenueResponse;
 import com.fpt.etc.entity.Venue;
+import com.fpt.etc.repository.RoomRepository;
 import com.fpt.etc.repository.VenueRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,9 +21,33 @@ public class VenueService {
     private final VenueRepository venueRepository;
     private final CloudinaryService cloudinaryService;
     private final SlugService slugService;
+    private final RoomRepository roomRepository;
 
-    public List<Venue> getAll() {
-        return venueRepository.findByDeletedFalse();
+    public List<VenueResponse> getAll() {
+        return venueRepository.findAllByDeletedFalse()
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    private VenueResponse mapToResponse(Venue venue) {
+        // Lấy rooms theo list id
+        List<RoomResponse> rooms = roomRepository.findByIdIn(venue.getRoomIds())
+                .stream()
+                .map(r -> new RoomResponse(r.getId(), r.getName(), r.getPrice()))
+                .toList();
+
+        return VenueResponse.builder()
+                .id(venue.getId())
+                .name(venue.getName())
+                .area(venue.getArea())
+                .people(venue.getPeople())
+                .description(venue.getDescription())
+                .address(venue.getAddress())
+                .openTime(venue.getOpenTime())
+                .closeTime(venue.getCloseTime())
+                .rooms(rooms)
+                .build();
     }
 
     public Venue getBySlug(String slug) {

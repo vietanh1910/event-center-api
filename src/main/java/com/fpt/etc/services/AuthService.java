@@ -6,14 +6,24 @@ import com.fpt.etc.dto.auth.SignupRequest;
 import com.fpt.etc.entity.User;
 import com.fpt.etc.repository.UserRepository;
 import com.fpt.etc.security.JwtUtils;
+import com.fpt.etc.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
+    private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
@@ -38,20 +48,17 @@ public class AuthService {
     }
 
     public JwtResponse login(LoginRequest dto) {
-        User user = userRepository.findByEmail(dto.getEmail())
-                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
 
-        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
-        }
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtUtils.generateJwtToken(authentication);
 
-        if (!"active".equalsIgnoreCase(user.getStatus())) {
-            throw new RuntimeException("Account is inactive or blocked");
-        }
-
-        String token = jwtUtils.generateToken(user.getId(), user.getRole());
-
-        return new JwtResponse(token, user.getId(), user.getName(), user.getEmail(), user.getRole());
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        String roles = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst().get();
+        return new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles);
     }
 }
 

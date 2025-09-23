@@ -9,5 +9,6 @@ import java.util.Optional;
 public interface RoomRepository extends JpaRepository<Room, Long> {
     List<Room> findByDeletedFalse();
     Optional<Room> findByIdAndDeletedFalse(Long id);
+    List<Room> findByIdIn(List<Long> ids);
 }
 

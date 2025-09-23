@@ -27,7 +27,7 @@ public class CreateBookingDto {
     private String eventTime;
 
     @NotNull(message = "EventId is required")
-    private String eventId;
+    private Long eventId;
 
     @Min(value = 1, message = "People must be greater than 0")
     private int people;
