@@ -1,8 +1,10 @@
 package com.fpt.etc.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MomoCreatePaymentResponse {
     private String requestId;
     private int errorCode;

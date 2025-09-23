@@ -78,5 +78,40 @@ public class PaymentController {
 
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/momo/test")
+    public ResponseEntity<?> createMomoPaymentTest() throws Exception {
+        // Fake data để test
+        String bookingId = "999";  // fake booking id
+        String bookingName = "Nguyen Van A";
+        String bookingCode = "BKTEST001";
+        String paymentMethod = "deposit"; // hoặc "full"
+
+        BigDecimal menuTotal = BigDecimal.valueOf(1_000_000);
+        BigDecimal roomPrice = BigDecimal.valueOf(500_000);
+        BigDecimal serviceTotal = BigDecimal.valueOf(200_000);
+
+        BigDecimal totalAmount = menuTotal.add(roomPrice).add(serviceTotal);
+        BigDecimal amountToPay = "deposit".equalsIgnoreCase(paymentMethod)
+                ? totalAmount.multiply(BigDecimal.valueOf(0.3)).setScale(0, BigDecimal.ROUND_HALF_UP)
+                : totalAmount;
+
+        // Gọi sang momoService như thật
+        MomoCreatePaymentResponse momoResponse = momoService.createPayment(new OrderInfoModel() {{
+            setFullName(bookingName);
+            setAmount(amountToPay.toPlainString());
+            setOrderInfo("Thanh toán " + paymentMethod + " cho đơn " + bookingCode);
+            setExtraData(bookingId);
+        }});
+
+        return ResponseEntity.ok().body(
+                new Object() {
+                    public final String momoPayUrl = momoResponse.getPayUrl();
+                    public final BigDecimal total = totalAmount;
+                    public final BigDecimal pay = amountToPay;
+                }
+        );
+    }
+
 }
 

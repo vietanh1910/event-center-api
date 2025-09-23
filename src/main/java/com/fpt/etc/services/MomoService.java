@@ -27,15 +27,16 @@ public class MomoService {
         model.setOrderId(orderId);
         model.setOrderInfo("Khách hàng: " + model.getFullName() + ". Nội dung: " + model.getOrderInfo());
 
-        String rawHash = "partnerCode=" + momoConfig.getPartnerCode()
-                + "&accessKey=" + momoConfig.getAccessKey()
-                + "&requestId=" + orderId
+        String rawHash = "accessKey=" + momoConfig.getAccessKey()
                 + "&amount=" + model.getAmount()
+                + "&extraData=" + model.getExtraData()
+                + "&ipnUrl=" + momoConfig.getNotifyUrl()
                 + "&orderId=" + orderId
                 + "&orderInfo=" + model.getOrderInfo()
-                + "&returnUrl=" + momoConfig.getReturnUrl()
-                + "&notifyUrl=" + momoConfig.getNotifyUrl()
-                + "&extraData=" + model.getExtraData();
+                + "&partnerCode=" + momoConfig.getPartnerCode()
+                + "&redirectUrl=" + momoConfig.getReturnUrl()
+                + "&requestId=" + orderId
+                + "&requestType=" + momoConfig.getRequestType();
 
         String signature = hmacSHA256(rawHash, momoConfig.getSecretKey());
 
@@ -46,8 +47,8 @@ public class MomoService {
         requestBody.put("orderId", orderId);
         requestBody.put("orderInfo", model.getOrderInfo());
         requestBody.put("amount", model.getAmount());
-        requestBody.put("returnUrl", momoConfig.getReturnUrl());
-        requestBody.put("notifyUrl", momoConfig.getNotifyUrl());
+        requestBody.put("redirectUrl", momoConfig.getReturnUrl());
+        requestBody.put("ipnUrl", momoConfig.getNotifyUrl());
         requestBody.put("extraData", model.getExtraData());
         requestBody.put("requestType", momoConfig.getRequestType());
         requestBody.put("signature", signature);
