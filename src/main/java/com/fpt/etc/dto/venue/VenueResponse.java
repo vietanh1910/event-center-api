@@ -22,6 +22,7 @@ public class VenueResponse {
     private String openTime;
     private String closeTime;
     private String image;
+    private String slug;
     private List<RoomResponse> rooms;
 
     private List<String> heroBanners;      // thêm

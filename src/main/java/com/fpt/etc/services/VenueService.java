@@ -52,6 +52,7 @@ public class VenueService {
                 .galleryImages(venue.getGalleryImages())
                 .thumbnailImages(venue.getThumbnailImages())
                 .days(venue.getDays())
+                .slug(venue.getSlug())
                 .build();
     }
 

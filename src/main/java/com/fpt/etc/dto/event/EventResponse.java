@@ -1,6 +1,7 @@
 package com.fpt.etc.dto.event;
 
 import com.fpt.etc.dto.menu.MenuResponse;
+import com.fpt.etc.dto.menu.MenuWithDishesDto;
 import com.fpt.etc.dto.service.ServiceResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +24,7 @@ public class EventResponse {
     private List<String> images;
     private boolean hot;
 
-    private List<MenuResponse> menus;
+    private List<MenuWithDishesDto> menus;
     private List<ServiceResponse> services;
 }
 

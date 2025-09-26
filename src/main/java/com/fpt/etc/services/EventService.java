@@ -1,9 +1,10 @@
 package com.fpt.etc.services;
 
+import com.fpt.etc.dto.dish.DishDetailDto;
 import com.fpt.etc.dto.event.CreateEventDto;
 import com.fpt.etc.dto.event.EventResponse;
 import com.fpt.etc.dto.event.UpdateEventDto;
-import com.fpt.etc.dto.menu.MenuResponse;
+import com.fpt.etc.dto.menu.MenuWithDishesDto;
 import com.fpt.etc.dto.service.ServiceResponse;
 import com.fpt.etc.entity.Event;
 import com.fpt.etc.repository.EventRepository;
@@ -26,6 +27,7 @@ public class EventService {
     private final CloudinaryService cloudinaryService; // service upload ảnh
     private final MenuRepository menuRepository; // service upload ảnh
     private final ServiceRepository serviceRepository; // service upload ảnh
+    private final DishService dishService;
 
     public List<EventResponse> getAll() {
         return eventRepository.findAll().stream()
@@ -36,14 +38,12 @@ public class EventService {
 
     private EventResponse mapToResponse(Event event) {
         // Lấy menu theo id
-        List<MenuResponse> menus = event.getMenuIds().isEmpty() ? List.of() :
+        List<MenuWithDishesDto> menus = event.getMenuIds().isEmpty() ? List.of() :
                 menuRepository.findAllById(event.getMenuIds()).stream()
-                        .map(m -> MenuResponse.builder()
-                                .id(m.getId())
-                                .name(m.getName())
-                                .price(m.getPrice())
-                                .build())
-                        .toList();
+                        .map(menu -> {
+                            List<DishDetailDto> dishes = dishService.getDishesByIds(menu.getDishIds());
+                            return new MenuWithDishesDto(menu.getId(), menu.getName(), menu.getPrice(), dishes);
+                        }).toList();
 
         // Lấy service theo id
         List<ServiceResponse> services = event.getServiceIds().isEmpty() ? List.of() :
