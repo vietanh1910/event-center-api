@@ -102,9 +102,10 @@ public class BookingService {
     }
 
 
-    public Booking getById(Long id) {
-        return bookingRepository.findById(id)
+    public BookingResponse getById(Long id) {
+        Booking result = bookingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
+        return mapToResponse(result);
     }
 
     @Transactional
@@ -170,17 +171,17 @@ public class BookingService {
         booking.setCancelledBy("user"); // TODO: check role từ SecurityContext
         bookingRepository.save(booking);
 
-        // 🔹 Gửi email hủy
-        String emailBody = EmailTemplateHelper.generateBookingStatusUpdateEmail(
-                booking, "cancelled", null, null, null, null,
-                Collections.emptyList(), Collections.emptyList()
-        );
-
-        emailService.sendEmail(
-                booking.getEmail(),
-                "[CaterEase] Đơn hàng đã bị hủy - " + booking.getOrderCode(),
-                emailBody
-        );
+//        // 🔹 Gửi email hủy
+//        String emailBody = EmailTemplateHelper.generateBookingStatusUpdateEmail(
+//                booking, "cancelled", null, null, null, null,
+//                Collections.emptyList(), Collections.emptyList()
+//        );
+//
+//        emailService.sendEmail(
+//                booking.getEmail(),
+//                "[CaterEase] Đơn hàng đã bị hủy - " + booking.getOrderCode(),
+//                emailBody
+//        );
 
         return booking;
     }

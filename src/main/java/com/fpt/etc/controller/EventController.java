@@ -26,7 +26,7 @@ public class EventController {
     }
 
     @GetMapping("/{slug}")
-    public ResponseEntity<Event> getBySlug(@PathVariable String slug) {
+    public ResponseEntity<EventResponse> getBySlug(@PathVariable String slug) {
         return ResponseEntity.ok(eventService.getBySlug(slug));
     }
 

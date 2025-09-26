@@ -69,9 +69,10 @@ public class EventService {
                 .build();
     }
 
-    public Event getBySlug(String slug) {
-        return eventRepository.findBySlugAndDeletedFalse(slug)
+    public EventResponse getBySlug(String slug) {
+        Event result = eventRepository.findBySlugAndDeletedFalse(slug)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
+        return mapToResponse(result);
     }
 
     @Transactional

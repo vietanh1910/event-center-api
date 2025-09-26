@@ -30,6 +30,7 @@ public class Event {
     @Column(unique = true)
     private String slug;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @ElementCollection

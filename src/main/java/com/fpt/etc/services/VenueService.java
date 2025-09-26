@@ -46,13 +46,19 @@ public class VenueService {
                 .address(venue.getAddress())
                 .openTime(venue.getOpenTime())
                 .closeTime(venue.getCloseTime())
+                .image(venue.getImage())
                 .rooms(rooms)
+                .heroBanners(venue.getHeroBanners())
+                .galleryImages(venue.getGalleryImages())
+                .thumbnailImages(venue.getThumbnailImages())
+                .days(venue.getDays())
                 .build();
     }
 
-    public Venue getBySlug(String slug) {
-        return venueRepository.findBySlugAndDeletedFalse(slug)
+    public VenueResponse getBySlug(String slug) {
+        Venue results =  venueRepository.findBySlugAndDeletedFalse(slug)
                 .orElseThrow(() -> new RuntimeException("Venue not found"));
+        return mapToResponse(results);
     }
 
     public Venue create(CreateVenueDto dto) {

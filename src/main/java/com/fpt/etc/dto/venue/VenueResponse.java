@@ -21,6 +21,12 @@ public class VenueResponse {
     private String address;
     private String openTime;
     private String closeTime;
+    private String image;
     private List<RoomResponse> rooms;
+
+    private List<String> heroBanners;      // thêm
+    private List<String> thumbnailImages;  // thêm
+    private List<String> galleryImages;    // thêm
+    private List<String> days;
 }
 

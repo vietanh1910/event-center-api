@@ -27,7 +27,7 @@ public class VenueController {
     }
 
     @GetMapping("/{slug}")
-    public ResponseEntity<Venue> getBySlug(@PathVariable String slug) {
+    public ResponseEntity<VenueResponse> getBySlug(@PathVariable String slug) {
         return ResponseEntity.ok(venueService.getBySlug(slug));
     }
 
